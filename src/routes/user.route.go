@@ -17,4 +17,5 @@ func UserModule(app fiber.Router, db *gorm.DB) {
 	// API
 	user := app.Group("/user")
 	user.Post("/", userHandler.CreateUser)
+	user.Get("/", userHandler.GetAllUser)
 }

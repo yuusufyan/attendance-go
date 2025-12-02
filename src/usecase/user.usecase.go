@@ -45,3 +45,36 @@ func (u *UserUseCase) Create(request *dtos.UserCreateRequest) error {
 	}
 	return nil
 }
+
+func (u *UserUseCase) GetAll(page, perPage int, search, sortBy, orderBy string) (response dtos.PaginationResponse[dtos.UserResponse], err error) {
+	if page <= 0 {
+		page = 1
+	}
+	if perPage <= 0 {
+		perPage = 10
+	}
+	offset := (page - 1) * perPage
+
+	users, total, err := u.userRepository.GetAll(perPage, offset, search, sortBy, orderBy)
+	if err != nil {
+		return response, err
+	}
+
+	for _, user := range users {
+		data := dtos.UserResponse{
+			ID:       user.ID,
+			Email:    user.Email,
+			UserName: user.Username,
+		}
+
+		response.Data = append(response.Data, data)
+	}
+
+	totalPage := int((total + int64(perPage) - 1) / int64(perPage)) // ceiling division
+
+	response.Total = total
+	response.TotalPage = totalPage
+	response.Page = page
+	response.PerPage = perPage
+	return response, nil
+}
