@@ -1,7 +1,12 @@
 package routes
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
+)
 
-func SetupRoutes(app *fiber.App) {
-	db :=
+func SetupRoutes(app *fiber.App, db *gorm.DB) {
+	api := app.Group("/api")
+
+	UserModule(api, db)
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"attendance-go/src/configs"
+	"attendance-go/src/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -22,7 +23,7 @@ func main() {
 	app.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.Send([]byte("Welcome to IPROC API"))
 	})
-	router.SetupRoutes(app)
+	routes.SetupRoutes(app, db)
 
 	app.Listen(":3000")
 }
