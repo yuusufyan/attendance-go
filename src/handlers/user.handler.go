@@ -18,22 +18,22 @@ func NewUserHandler(userUseCase *usecase.UserUseCase) *UserHandler {
 func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 	var req dtos.UserCreateRequest
 	if err := c.BodyParser(&req); err != nil {
-		return dtos.ResponseError(c, fiber.StatusBadRequest, err.Error())
+		return dtos.ResponseError(c, fiber.StatusBadRequest, err.Error(), nil)
 	}
 	if err := h.userUseCase.Create(&req); err != nil {
-		return dtos.ResponseError(c, fiber.StatusInternalServerError, err.Error())
+		return dtos.ResponseError(c, fiber.StatusInternalServerError, err.Error(), nil)
 	}
-	return dtos.ResponseSuccess(c, nil, "user created")
+	return dtos.ResponseSuccess(c, "user created", nil)
 }
 
 func (h *UserHandler) GetAllUser(c *fiber.Ctx) error {
 	var req dtos.PaginationRequest
 	if err := c.QueryParser(&req); err != nil {
-		return dtos.ResponseError(c, fiber.StatusBadRequest, err.Error())
+		return dtos.ResponseError(c, fiber.StatusBadRequest, err.Error(), nil)
 	}
 	response, err := h.userUseCase.GetAll(req.Page, req.PerPage, req.Search, req.SortBy, req.OrderBy)
 	if err != nil {
-		return dtos.ResponseError(c, fiber.StatusInternalServerError, err.Error())
+		return dtos.ResponseError(c, fiber.StatusInternalServerError, err.Error(), nil)
 	}
-	return dtos.ResponseSuccess(c, response, "user retrieved")
+	return dtos.ResponseSuccess(c, "user retrieved", response)
 }

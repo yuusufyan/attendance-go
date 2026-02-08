@@ -27,7 +27,7 @@ type PaginationResponse[T any] struct {
 	Data      []T   `json:"data"`
 }
 
-func ResponseSuccess(c *fiber.Ctx, data interface{}, message string) error {
+func ResponseSuccess(c *fiber.Ctx, message string, data interface{}) error {
 	resp := Response{
 		Status:  "success",
 		Message: message,
@@ -36,10 +36,10 @@ func ResponseSuccess(c *fiber.Ctx, data interface{}, message string) error {
 	return c.Status(fiber.StatusOK).JSON(resp)
 }
 
-func ResponseError(c *fiber.Ctx, httpCode int, message string) error {
+func ResponseError(c *fiber.Ctx, httpCode int, message string, data interface{}) error {
 	return c.Status(httpCode).JSON(Response{
 		Status:  "error",
 		Message: message,
-		Data:    nil,
+		Data:    data,
 	})
 }

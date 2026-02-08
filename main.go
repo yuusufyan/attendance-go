@@ -20,9 +20,7 @@ func main() {
 	configs.ConnectDB()
 	db := configs.DB
 
-	app.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.Send([]byte("Welcome to IPROC API"))
-	})
+	routes.HealthModule(app, db)
 	routes.SetupRoutes(app, db)
 
 	app.Listen(":3000")
