@@ -2,17 +2,17 @@ package handlers
 
 import (
 	"attendance-go/src/dtos"
-	"attendance-go/src/usecase"
+	"attendance-go/src/services"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type UserHandler struct {
-	userUseCase *usecase.UserUseCase
+	userService *services.UserService
 }
 
-func NewUserHandler(userUseCase *usecase.UserUseCase) *UserHandler {
-	return &UserHandler{userUseCase: userUseCase}
+func NewUserHandler(userService *services.UserService) *UserHandler {
+	return &UserHandler{userService: userService}
 }
 
 func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
@@ -20,7 +20,7 @@ func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 	if err := c.BodyParser(&req); err != nil {
 		return dtos.ResponseError(c, fiber.StatusBadRequest, err.Error(), nil)
 	}
-	if err := h.userUseCase.Create(&req); err != nil {
+	if err := h.userService.Create(&req); err != nil {
 		return dtos.ResponseError(c, fiber.StatusInternalServerError, err.Error(), nil)
 	}
 	return dtos.ResponseSuccess(c, "user created", nil)
@@ -31,7 +31,7 @@ func (h *UserHandler) GetAllUser(c *fiber.Ctx) error {
 	if err := c.QueryParser(&req); err != nil {
 		return dtos.ResponseError(c, fiber.StatusBadRequest, err.Error(), nil)
 	}
-	response, err := h.userUseCase.GetAll(req.Page, req.PerPage, req.Search, req.SortBy, req.OrderBy)
+	response, err := h.userService.GetAll(req.Page, req.PerPage, req.Search, req.SortBy, req.OrderBy)
 	if err != nil {
 		return dtos.ResponseError(c, fiber.StatusInternalServerError, err.Error(), nil)
 	}

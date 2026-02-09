@@ -1,4 +1,4 @@
-package usecase
+package services
 
 import (
 	"attendance-go/src/dtos"
@@ -9,15 +9,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserUseCase struct {
+type UserService struct {
 	userRepository *repositories.UserRepository
 }
 
-func NewUserUseCase(userRepository *repositories.UserRepository) *UserUseCase {
-	return &UserUseCase{userRepository: userRepository}
+func NewUserService(userRepository *repositories.UserRepository) *UserService {
+	return &UserService{userRepository: userRepository}
 }
 
-func (u *UserUseCase) Create(request *dtos.UserCreateRequest) error {
+func (u *UserService) Create(request *dtos.UserCreateRequest) error {
 	_, err := u.userRepository.GetByEmail(request.Email)
 	if err == nil {
 		return errors.New("email already registered")
@@ -46,7 +46,7 @@ func (u *UserUseCase) Create(request *dtos.UserCreateRequest) error {
 	return nil
 }
 
-func (u *UserUseCase) GetAll(page, perPage int, search, sortBy, orderBy string) (response dtos.PaginationResponse[dtos.UserResponse], err error) {
+func (u *UserService) GetAll(page, perPage int, search, sortBy, orderBy string) (response dtos.PaginationResponse[dtos.UserResponse], err error) {
 	if page <= 0 {
 		page = 1
 	}
