@@ -72,9 +72,22 @@ func (u *UserService) GetAll(page, perPage int, search, sortBy, orderBy string) 
 
 	totalPage := int((total + int64(perPage) - 1) / int64(perPage)) // ceiling division
 
-	response.Total = total
-	response.TotalPage = totalPage
 	response.Page = page
 	response.PerPage = perPage
+	response.Total = total
+	response.TotalPage = totalPage
+	return response, nil
+}
+
+func (u *UserService) GetByID(id uint) (response dtos.UserResponse, err error) {
+	user, err := u.userRepository.GetByID(id)
+	if err != nil {
+		return response, err
+	}
+	response = dtos.UserResponse{
+		ID:       user.ID,
+		Email:    user.Email,
+		UserName: user.Username,
+	}
 	return response, nil
 }

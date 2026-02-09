@@ -3,6 +3,7 @@ package handlers
 import (
 	"attendance-go/src/dtos"
 	"attendance-go/src/services"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -32,6 +33,18 @@ func (h *UserHandler) GetAllUser(c *fiber.Ctx) error {
 		return dtos.ResponseError(c, fiber.StatusBadRequest, err.Error(), nil)
 	}
 	response, err := h.userService.GetAll(req.Page, req.PerPage, req.Search, req.SortBy, req.OrderBy)
+	if err != nil {
+		return dtos.ResponseError(c, fiber.StatusInternalServerError, err.Error(), nil)
+	}
+	return dtos.ResponseSuccess(c, "user retrieved", response)
+}
+
+func (h *UserHandler) GetByID(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return dtos.ResponseError(c, fiber.StatusBadRequest, err.Error(), nil)
+	}
+	response, err := h.userService.GetByID(uint(id))
 	if err != nil {
 		return dtos.ResponseError(c, fiber.StatusInternalServerError, err.Error(), nil)
 	}
