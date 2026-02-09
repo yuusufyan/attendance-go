@@ -6,6 +6,7 @@ import (
 	"attendance-go/src/repositories"
 	"errors"
 
+	"github.com/gosimple/slug"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -34,9 +35,9 @@ func (u *UserService) Create(request *dtos.UserCreateRequest) error {
 	}
 
 	user := &models.UserModels{
-		Email:    request.Email,
+		Email:    slug.Make(request.Email),
 		Password: string(hashedPassword),
-		Username: request.UserName,
+		Username: slug.Make(request.UserName),
 		IsActive: true,
 	}
 	err = u.userRepository.Create(user)
@@ -90,4 +91,26 @@ func (u *UserService) GetByID(id uint) (response dtos.UserResponse, err error) {
 		UserName: user.Username,
 	}
 	return response, nil
+}
+
+func (u *UserService) UpdateByID(id uint, response *dtos.UserResponse) (dtos.UserResponse, error) {
+	user, err := u.userRepository.GetByID(id)
+	if err != nil {
+		return dtos.UserResponse{}, err
+	}
+
+	user.Email = slug.Make(response.Email)
+	user.Username = slug.Make(response.UserName)
+
+	err = u.userRepository.Update(user)
+	if err != nil {
+		return dtos.UserResponse{}, err
+	}
+
+	response = &dtos.UserResponse{
+		ID:       user.ID,
+		Email:    user.Email,
+		UserName: user.Username,
+	}
+	return *response, nil
 }

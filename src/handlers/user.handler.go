@@ -50,3 +50,19 @@ func (h *UserHandler) GetByID(c *fiber.Ctx) error {
 	}
 	return dtos.ResponseSuccess(c, "user retrieved", response)
 }
+
+func (h *UserHandler) UpdateByID(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return dtos.ResponseError(c, fiber.StatusBadRequest, err.Error(), nil)
+	}
+	var req dtos.UserResponse
+	if err := c.BodyParser(&req); err != nil {
+		return dtos.ResponseError(c, fiber.StatusBadRequest, err.Error(), nil)
+	}
+	response, err := h.userService.UpdateByID(uint(id), &req)
+	if err != nil {
+		return dtos.ResponseError(c, fiber.StatusInternalServerError, err.Error(), nil)
+	}
+	return dtos.ResponseSuccess(c, "user updated", response)
+}

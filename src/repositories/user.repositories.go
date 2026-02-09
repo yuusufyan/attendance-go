@@ -19,6 +19,10 @@ func (r *UserRepository) Create(create *models.UserModels) error {
 	return r.db.Create(create).Error
 }
 
+func (r *UserRepository) Update(update *models.UserModels) error {
+	return r.db.Where("id = ?", update.ID).Updates(update).Error
+}
+
 func (r *UserRepository) GetByID(id uint) (*models.UserModels, error) {
 	var user models.UserModels
 	if err := r.db.First(&user, id).Error; err != nil {
